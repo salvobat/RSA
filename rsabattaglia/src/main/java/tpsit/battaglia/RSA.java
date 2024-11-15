@@ -19,7 +19,7 @@ public class RSA {
         n = p.multiply(q);
        phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)); // Calcolo φ(n) = (p - 1) * (q - 1).
 
-       //e = BigInteger.valueOf(65537);
+       //e = BigInteger.valueOf(65537); 
         e = generateCoprimePublicKey();
         d = e.modInverse(phi); // Calcolo l'inverso moltiplicativo di e modulo φ(n) cioè l'esponente privato d
 
