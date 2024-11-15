@@ -8,6 +8,7 @@ public class RSA {
     private static final Logger logger = LogManager.getLogger(RSA.class);
 
     private BigInteger n, d, e;
+    private BigInteger phi;
 
     // Genera le chiavi
     public void generaChiavi(int lunghezza) {
@@ -16,15 +17,24 @@ public class RSA {
         BigInteger q = BigInteger.probablePrime(lunghezza, rand);
 
         n = p.multiply(q);
-        BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)); // Calcolo φ(n) = (p - 1) * (q - 1).
+       phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)); // Calcolo φ(n) = (p - 1) * (q - 1).
 
-        e = BigInteger.valueOf(65537);
+        e = generateCoprimePublicKey();
         d = e.modInverse(phi); // Calcolo l'inverso moltiplicativo di e modulo φ(n) cioè l'esponente privato d
 
         logger.info("Chiavi generate:");
         logger.info("Modulo n: " + n);
         logger.info("Esponente pubblico e: " + e);
         logger.info("Esponente privato d: " + d);
+    }
+
+    private BigInteger generateCoprimePublicKey() {
+        SecureRandom random = new SecureRandom();
+        BigInteger e;
+        do {
+            e = new BigInteger(phi.bitLength(), random);
+        } while ((e.compareTo(BigInteger.ONE) <= 0) || (e.compareTo(phi) >= 0) || !e.gcd(phi).equals(BigInteger.ONE));
+        return e;
     }
 
     // Cifra
